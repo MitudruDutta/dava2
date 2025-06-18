@@ -1,16 +1,16 @@
-'use client'
-import React, { useState } from "react";
-import { Shield, Users, Calendar, CreditCard, Bell } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import RoleVerification from "../../../components-for-dash/admin/RoleVerification";
-import HospitalManagement from "../../../components-for-dash/admin/HospitalManagement";
-import AppointmentManagement from "../../../components-for-dash/admin/AppointmentManagement";
-import PaymentTracking from "../../../components-for-dash/admin/PaymentTracking";
-import NotificationConsole from "../../../components-for-dash/admin/NotificationConsole";
 
-const Page = () => {
-  const [activeTab, setActiveTab] = useState("roles");
+import React, { useState } from 'react';
+import { Shield, Users, Calendar, CreditCard, Bell } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import RoleVerification from '../admin/RoleVerification';
+import HospitalManagement from '../admin/HospitalManagement';
+import AppointmentManagement from '../admin/AppointmentManagement';
+import PaymentTracking from '../admin/PaymentTracking';
+import NotificationConsole from '../admin/NotificationConsole';
+
+const AdminDashboard = () => {
+  const [activeTab, setActiveTab] = useState('roles');
 
   // TODO: Fetch admin statistics from Supabase
   const adminStats = {
@@ -18,7 +18,7 @@ const Page = () => {
     totalDoctors: 145,
     totalHospitals: 23,
     pendingPayments: 8,
-    totalTransactions: 1247,
+    totalTransactions: 1247
   };
 
   return (
@@ -33,9 +33,7 @@ const Page = () => {
             <CardContent className="p-4">
               <div className="flex items-center space-x-2">
                 <Shield className="h-5 w-5 text-red-600" />
-                <span className="text-sm font-medium">
-                  {adminStats.pendingVerifications} Pending
-                </span>
+                <span className="text-sm font-medium">{adminStats.pendingVerifications} Pending</span>
               </div>
             </CardContent>
           </Card>
@@ -43,36 +41,24 @@ const Page = () => {
             <CardContent className="p-4">
               <div className="flex items-center space-x-2">
                 <Users className="h-5 w-5 text-blue-600" />
-                <span className="text-sm font-medium">
-                  {adminStats.totalDoctors} Doctors
-                </span>
+                <span className="text-sm font-medium">{adminStats.totalDoctors} Doctors</span>
               </div>
             </CardContent>
           </Card>
         </div>
       </div>
 
-      <Tabs
-        value={activeTab}
-        onValueChange={setActiveTab}
-        className="space-y-6"
-      >
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
         <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="roles" className="flex items-center space-x-2">
             <Shield className="h-4 w-4" />
             <span>Role Verification</span>
           </TabsTrigger>
-          <TabsTrigger
-            value="hospitals"
-            className="flex items-center space-x-2"
-          >
+          <TabsTrigger value="hospitals" className="flex items-center space-x-2">
             <Users className="h-4 w-4" />
             <span>Hospital Management</span>
           </TabsTrigger>
-          <TabsTrigger
-            value="appointments"
-            className="flex items-center space-x-2"
-          >
+          <TabsTrigger value="appointments" className="flex items-center space-x-2">
             <Calendar className="h-4 w-4" />
             <span>Appointments</span>
           </TabsTrigger>
@@ -80,10 +66,7 @@ const Page = () => {
             <CreditCard className="h-4 w-4" />
             <span>Payments</span>
           </TabsTrigger>
-          <TabsTrigger
-            value="notifications"
-            className="flex items-center space-x-2"
-          >
+          <TabsTrigger value="notifications" className="flex items-center space-x-2">
             <Bell className="h-4 w-4" />
             <span>Notifications</span>
           </TabsTrigger>
@@ -113,4 +96,4 @@ const Page = () => {
   );
 };
 
-export default Page;
+export default AdminDashboard;

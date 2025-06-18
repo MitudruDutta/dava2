@@ -1,12 +1,12 @@
-'use client'
+
 import React, { useState } from 'react';
 import { User, Calendar, FileText, History } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import DoctorProfile from '../../../components-for-dash/doctor/DoctorProfile';
-import AppointmentQueue from '../../../components-for-dash/doctor/AppointmentQueue';
-import DiagnosisSubmission from '../../../components-for-dash/doctor/DiagnosisSubmission';
-import TreatmentHistory from '../../../components-for-dash/doctor/TreatmentHistory';
+import DoctorProfile from '../doctor/DoctorProfile';
+import AppointmentQueue from '../doctor/AppointmentQueue';
+import DiagnosisSubmission from '../doctor/DiagnosisSubmission';
+import TreatmentHistory from '../doctor/TreatmentHistory';
 
 const DoctorDashboard = () => {
   const [activeTab, setActiveTab] = useState('profile');
