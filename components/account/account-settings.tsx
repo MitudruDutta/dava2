@@ -15,21 +15,17 @@ import { useRouter } from "next/navigation";
 import type { User } from "@supabase/supabase-js";
 // import Avatar from '@/app/account/avatar'
 import { useAccount } from 'wagmi'
+import { useDisconnect } from 'wagmi'
 
 
 interface UserProfile {
-  full_name: string;
-  username: string | null;
-  bio: string;
-  avatar_url: string;
+  walletAddress?: string | null;
+  full_name?: string | null;
+  avatar_url?: string | null;
+  bio?: string | null;
+  role: string;
 }
 
-interface NotificationSettings {
-  email_notifications: boolean;
-  task_reminders: boolean;
-  exam_alerts: boolean;
-  study_suggestions: boolean;
-}
 
 export function AccountSettings({ user }: { user: User | null }) {
   const [activeTab, setActiveTab] = useState("profile");
@@ -39,6 +35,7 @@ export function AccountSettings({ user }: { user: User | null }) {
   //wallet profile
   const account = useAccount()
   const walletAddress = account?.address || "";
+  const { disconnect } = useDisconnect()
 
   // Profile states
   const [loading, setLoading] = useState(true);
@@ -46,14 +43,8 @@ export function AccountSettings({ user }: { user: User | null }) {
   const [bio, setBio] = useState("Hi There from V4");
   const [avatar, setAvatarUrl] = useState("/placeholder.svg");
   const [wallet, setWallet] = useState("");
+  const [role, setRole] = useState<string>("patient");
   
-  // Notification states
-  const [notifications, setNotifications] = useState<NotificationSettings>({
-    email_notifications: true,
-    task_reminders: true,
-    exam_alerts: true,
-    study_suggestions: false,
-  });
   
   // Error and success states
   const [error, setError] = useState<string | null>(null);
@@ -85,7 +76,7 @@ export function AccountSettings({ user }: { user: User | null }) {
       setLoading(true);
       const { data, error, status } = await supabase
         .from("profiles")
-        .select(`full_name, walletAddress, bio, avatar_url, updated_at`)
+        .select(`full_name, walletAddress, bio, avatar_url, updated_at, role`)
         .eq("id", user.id)
         .single();
         
@@ -99,9 +90,11 @@ export function AccountSettings({ user }: { user: User | null }) {
         setWallet(data.walletAddress || "");
         setBio(data.bio || "Hi There from V4");
         setAvatarUrl(data.avatar_url || user?.user_metadata?.avatar_url || "/placeholder.svg");
+        setRole(data.role || "patient");
       } else {
         // If no data, use Google avatar if available
         setAvatarUrl(user?.user_metadata?.avatar_url || "/placeholder.svg");
+        setRole("patient");
       }
     } catch (error) {
       showMessage("Error loading user data!", true);
@@ -115,22 +108,24 @@ export function AccountSettings({ user }: { user: User | null }) {
     getProfile();
   }, [user, getProfile]);
 
-  const updateProfile = async (profileData: Partial<UserProfile> & { walletAddress?: string }) => {
+  const updateProfile = async (profileData: Partial<UserProfile>) => {
     if (!user?.id) return;
-    
     try {
       setLoading(true);
-      const { error } = await supabase.from("profiles").upsert({
+      const payload = {
         id: user.id,
-        full_name: profileData.full_name || fullname,
-        walletAddress: profileData.walletAddress || wallet,
-        bio: profileData.bio || bio,
-        avatar_url: user?.user_metadata?.avatar_url || avatar,
+        walletAddress: profileData.walletAddress ?? wallet,
+        full_name: profileData.full_name ?? fullname,
+        avatar_url: profileData.avatar_url ?? user?.user_metadata?.avatar_url ?? avatar,
+        bio: profileData.bio ?? bio,
+        role: profileData.role ?? role,
         updated_at: new Date().toISOString(),
-      });
-      
+      };
+      const { error } = await supabase.from("profiles").upsert([payload], { onConflict: 'id' });
       if (error) throw error;
       showMessage("Profile updated successfully!");
+      // Optionally, refresh profile after update
+      await getProfile();
     } catch (error: any) {
       showMessage(error.message || "Error updating profile!", true);
       console.error("Profile update error:", error);
@@ -151,9 +146,13 @@ export function AccountSettings({ user }: { user: User | null }) {
   };
 
   const logout = async () => {
+    await disconnect();
     await supabase.auth.signOut();
     router.push("/");
   };
+
+  // For wallet input, show connected wallet if available, otherwise show wallet from Supabase
+  const displayedWalletAddress = walletAddress || wallet;
 
   return (
     <div className="h-full">
@@ -277,17 +276,19 @@ export function AccountSettings({ user }: { user: User | null }) {
                     <Input
                       id="wallet"
                       type="text"
-                      value={walletAddress}
+                      value={displayedWalletAddress}
                       disabled
                       className="opacity-50"
                     />
                     <Button
                       className="w-fit mt-2"
                       variant="secondary"
-                      onClick={() => setWallet(walletAddress)}
-                      disabled={walletAddress === wallet}
+                      onClick={() => {
+                        if (walletAddress) setWallet(walletAddress);
+                      }}
+                      disabled={!walletAddress || walletAddress === wallet}
                     >
-                      {walletAddress === wallet ? "Wallet Saved" : "Use This Wallet"}
+                      {!walletAddress ? "No Wallet Connected" : walletAddress === wallet ? "Wallet Saved" : "Use This Wallet"}
                     </Button>
                   </div>
 
@@ -316,6 +317,21 @@ export function AccountSettings({ user }: { user: User | null }) {
                     />
                   </div>
 
+                  {/* Role dropdown */}
+                  <div className="grid gap-2">
+                    <Label htmlFor="role">Role</Label>
+                    <select
+                      id="role"
+                      className="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                      value={role}
+                      onChange={e => setRole(e.target.value)}
+                    >
+                      <option value="patient">Patient</option>
+                      <option value="doctor">Doctor</option>
+                      <option value="admin">Admin</option>
+                    </select>
+                  </div>
+
                   <Button
                     className="w-fit"
                     onClick={() => updateProfile({
@@ -323,6 +339,7 @@ export function AccountSettings({ user }: { user: User | null }) {
                       walletAddress: wallet,
                       bio,
                       avatar_url: user?.user_metadata?.avatar_url || avatar,
+                      role,
                     })}
                     disabled={loading}
                   >
