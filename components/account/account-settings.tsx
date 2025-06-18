@@ -14,6 +14,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import type { User } from "@supabase/supabase-js";
 // import Avatar from '@/app/account/avatar'
+import { useAccount } from 'wagmi'
 
 
 interface UserProfile {
@@ -33,12 +34,18 @@ interface NotificationSettings {
 export function AccountSettings({ user }: { user: User | null }) {
   const [activeTab, setActiveTab] = useState("profile");
   
+
+
+  //wallet profile
+  const account = useAccount()
+  const walletAddress = account?.address || "";
+
   // Profile states
   const [loading, setLoading] = useState(true);
   const [fullname, setFullname] = useState("Anonymous");
-  const [username, setUsername] = useState<string | null>(null);
   const [bio, setBio] = useState("Hi There from V4");
   const [avatar, setAvatarUrl] = useState("/placeholder.svg");
+  const [wallet, setWallet] = useState("");
   
   // Notification states
   const [notifications, setNotifications] = useState<NotificationSettings>({
@@ -78,7 +85,7 @@ export function AccountSettings({ user }: { user: User | null }) {
       setLoading(true);
       const { data, error, status } = await supabase
         .from("profiles")
-        .select(`full_name, username, bio, avatar_url`)
+        .select(`full_name, walletAddress, bio, avatar_url, updated_at`)
         .eq("id", user.id)
         .single();
         
@@ -89,9 +96,12 @@ export function AccountSettings({ user }: { user: User | null }) {
       
       if (data) {
         setFullname(data.full_name || "Anonymous");
-        setUsername(data.username);
+        setWallet(data.walletAddress || "");
         setBio(data.bio || "Hi There from V4");
-        setAvatarUrl(data.avatar_url || "/placeholder.svg");
+        setAvatarUrl(data.avatar_url || user?.user_metadata?.avatar_url || "/placeholder.svg");
+      } else {
+        // If no data, use Google avatar if available
+        setAvatarUrl(user?.user_metadata?.avatar_url || "/placeholder.svg");
       }
     } catch (error) {
       showMessage("Error loading user data!", true);
@@ -105,7 +115,7 @@ export function AccountSettings({ user }: { user: User | null }) {
     getProfile();
   }, [user, getProfile]);
 
-  const updateProfile = async (profileData: Partial<UserProfile>) => {
+  const updateProfile = async (profileData: Partial<UserProfile> & { walletAddress?: string }) => {
     if (!user?.id) return;
     
     try {
@@ -113,9 +123,9 @@ export function AccountSettings({ user }: { user: User | null }) {
       const { error } = await supabase.from("profiles").upsert({
         id: user.id,
         full_name: profileData.full_name || fullname,
-        username: profileData.username || username,
+        walletAddress: profileData.walletAddress || wallet,
         bio: profileData.bio || bio,
-        avatar_url: profileData.avatar_url || avatar,
+        avatar_url: user?.user_metadata?.avatar_url || avatar,
         updated_at: new Date().toISOString(),
       });
       
@@ -129,49 +139,15 @@ export function AccountSettings({ user }: { user: User | null }) {
     }
   };
 
-  const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file || !user?.id) return;
-
-    try {
-      setLoading(true);
-      
-      // Upload file to Supabase storage
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${user.id}.${fileExt}`;
-      const filePath = `avatars/${fileName}`;
-
-      const { error: uploadError } = await supabase.storage
-        .from('avatars')
-        .upload(filePath, file, { upsert: true });
-
-      if (uploadError) throw uploadError;
-
-      // Get public URL
-      const { data: { publicUrl } } = supabase.storage
-        .from('avatars')
-        .getPublicUrl(filePath);
-
-      // Update profile with new avatar URL
-      setAvatarUrl(publicUrl);
-      await updateProfile({ avatar_url: publicUrl });
-      
-    } catch (error: any) {
-      showMessage(error.message || "Error uploading avatar!", true);
-      console.error("Avatar upload error:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const userData = {
     name: fullname,
     email: user?.email || "No email provided",
-    avatar: avatar,
+    avatar: user?.user_metadata?.avatar_url || avatar,
     joinDate: user?.created_at 
       ? new Date(user.created_at).toLocaleDateString()
       : "N/A",
     bio: bio,
+    wallet: wallet,
   };
 
   const logout = async () => {
@@ -222,33 +198,9 @@ export function AccountSettings({ user }: { user: User | null }) {
                 <Avatar className="h-20 w-20">
                   <AvatarImage
                     src={userData.avatar || "/placeholder.svg"}
-                    
                   />
                   <AvatarFallback>{userData.name.charAt(0)}</AvatarFallback>
                 </Avatar>
-                <label className="absolute -bottom-2 -right-2 cursor-pointer">
-                  <div className="bg-primary text-primary-foreground rounded-full p-1.5 hover:bg-primary/90 transition-colors">
-                    <Upload className="h-3 w-3" />
-                  </div>
-                  <input
-                    type="file"
-                    className="hidden"
-                    accept="image/*"
-                    onChange={handleAvatarUpload}
-                  />
-                </label>
-
-                {/* Only Works for Non SSO users */}
-
-                {/* <Avatar
-        uid={user?.id ?? null}
-        url={userData.avatar}
-        size={150}
-        onUpload={(url) => {
-          setAvatarUrl(url)
-          updateProfile({ avatar_url: url })
-        }}
-      /> */}
               </div>
               <h2 className="text-xl font-semibold">{userData.name}</h2>
               <p className="text-sm text-muted-foreground">{userData.email}</p>
@@ -258,6 +210,9 @@ export function AccountSettings({ user }: { user: User | null }) {
               <p className="text-xs text-muted-foreground mt-1">
                 {userData.bio}
               </p>
+              {/* <p className="text-xs text-muted-foreground mt-1">
+                Wallet: {userData.wallet || "Not set"}
+              </p> */}
             </div>
 
             <Separator className="my-4" />
@@ -279,7 +234,6 @@ export function AccountSettings({ user }: { user: User | null }) {
                 <Bell className="mr-2 h-4 w-4" />
                 Notifications
               </Button>
-              {/* <ConnectButton /> */}
             </div>
 
             <Separator className="my-4" />
@@ -319,14 +273,22 @@ export function AccountSettings({ user }: { user: User | null }) {
                   </div>
 
                   <div className="grid gap-2">
-                    <Label htmlFor="username">Username</Label>
+                    <Label htmlFor="wallet">Wallet Address</Label>
                     <Input
-                      id="username"
+                      id="wallet"
                       type="text"
-                      value={username || ""}
-                      onChange={(e) => setUsername(e.target.value || null)}
-                      placeholder="Enter a unique username"
+                      value={walletAddress}
+                      disabled
+                      className="opacity-50"
                     />
+                    <Button
+                      className="w-fit mt-2"
+                      variant="secondary"
+                      onClick={() => setWallet(walletAddress)}
+                      disabled={walletAddress === wallet}
+                    >
+                      {walletAddress === wallet ? "Wallet Saved" : "Use This Wallet"}
+                    </Button>
                   </div>
 
                   <div className="grid gap-2">
@@ -358,9 +320,9 @@ export function AccountSettings({ user }: { user: User | null }) {
                     className="w-fit"
                     onClick={() => updateProfile({
                       full_name: fullname,
-                      username,
+                      walletAddress: wallet,
                       bio,
-                      avatar_url: avatar,
+                      avatar_url: user?.user_metadata?.avatar_url || avatar,
                     })}
                     disabled={loading}
                   >
@@ -368,85 +330,6 @@ export function AccountSettings({ user }: { user: User | null }) {
                   </Button>
                 </div>
               </TabsContent>
-
-              {/* <TabsContent value="notifications" className="space-y-6">
-                <h2 className="text-xl font-semibold">Notification Preferences</h2>
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-0.5">
-                      <Label htmlFor="email-notifications">Email Notifications</Label>
-                      <p className="text-sm text-muted-foreground">
-                        Receive notifications via email
-                      </p>
-                    </div>
-                    <Switch
-                      id="email-notifications"
-                      checked={notifications.email_notifications}
-                      onCheckedChange={(checked) =>
-                        setNotifications(prev => ({ ...prev, email_notifications: checked }))
-                      }
-                    />
-                  </div>
-
-                  <Separator />
-
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-0.5">
-                      <Label htmlFor="task-reminders">Task Reminders</Label>
-                      <p className="text-sm text-muted-foreground">
-                        Get reminders for upcoming tasks
-                      </p>
-                    </div>
-                    <Switch
-                      id="task-reminders"
-                      checked={notifications.task_reminders}
-                      onCheckedChange={(checked) =>
-                        setNotifications(prev => ({ ...prev, task_reminders: checked }))
-                      }
-                    />
-                  </div>
-
-                  <Separator />
-
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-0.5">
-                      <Label htmlFor="exam-alerts">Exam Alerts</Label>
-                      <p className="text-sm text-muted-foreground">
-                        Receive alerts for upcoming exams
-                      </p>
-                    </div>
-                    <Switch
-                      id="exam-alerts"
-                      checked={notifications.exam_alerts}
-                      onCheckedChange={(checked) =>
-                        setNotifications(prev => ({ ...prev, exam_alerts: checked }))
-                      }
-                    />
-                  </div>
-
-                  <Separator />
-
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-0.5">
-                      <Label htmlFor="study-suggestions">Study Suggestions</Label>
-                      <p className="text-sm text-muted-foreground">
-                        Get AI-powered study suggestions
-                      </p>
-                    </div>
-                    <Switch
-                      id="study-suggestions"
-                      checked={notifications.study_suggestions}
-                      onCheckedChange={(checked) =>
-                        setNotifications(prev => ({ ...prev, study_suggestions: checked }))
-                      }
-                    />
-                  </div>
-
-                  <Button className="w-fit" onClick={saveNotificationSettings}>
-                    Save Preferences
-                  </Button>
-                </div>
-              </TabsContent> */}
             </Tabs>
           </div>
         </motion.div>

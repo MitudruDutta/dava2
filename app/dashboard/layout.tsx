@@ -11,9 +11,6 @@ const layout = ({ children }: { children: React.ReactNode }) => {
           <AppShell>{children}</AppShell>
         </ThemeProvider>
      </Providers>
-      <ThemeProvider>
-        <AppShell>{children}</AppShell>
-      </ThemeProvider>
     </div>
   )
 }

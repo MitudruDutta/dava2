@@ -8,19 +8,19 @@ import { motion, AnimatePresence } from "framer-motion"
 import { Sidebar } from "./sidebar"
 import { TopBar } from "./top-bar"
 // import { AIFloatingButton } from "./assistant/ai-floating-button"
-import { useStore } from "@/lib/store"
+// import { useStore } from "@/lib/store"
 import { initializeStoreWithMockData } from "@/lib/mock-data"
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
-  const { courses, tasks, sidebarOpen } = useStore()
+  // const { courses, tasks, sidebarOpen } = useStore()
 
   // Initialize store with mock data if empty
-  useEffect(() => {
-    if (courses.length === 0 && tasks.length === 0) {
-      initializeStoreWithMockData(useStore.getState())
-    }
-  }, [courses.length, tasks.length])
+  // useEffect(() => {
+  //   if (courses.length === 0 && tasks.length === 0) {
+  //     initializeStoreWithMockData(useStore.getState())
+  //   }
+  // }, [courses.length, tasks.length])
 
   // Determine if we're on the dashboard page
   const isDashboard = pathname === "/"

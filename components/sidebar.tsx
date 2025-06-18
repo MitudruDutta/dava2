@@ -16,9 +16,10 @@ import {
   Menu,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
-import { useStore } from "@/lib/store"
+// import { useStore } from "@/lib/store"
 import { Button } from "@/components/ui/button"
 import { useMediaQuery } from "@/hooks/use-media-query"
+import { useStore } from "@/lib/store"
 
 export function Sidebar() {
   const pathname = usePathname()
@@ -45,11 +46,9 @@ export function Sidebar() {
   // Navigation items
   const navItems = [
     { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-    { href: "/dashboard/planner", label: "Planner", icon: Calendar },
-    { href: "/dashboard/courses", label: "Courses", icon: BookOpen },
-    { href: "/dashboard/focus", label: "Focus Mode", icon: Clock },
-    { href: "/dashboard/notes", label: "Notes", icon: FileText },
-    { href: "/dashboard/assistant", label: "AI Assistant", icon: Bot },
+    { href: "/dashboard/patient", label: "Patient", icon: Calendar },
+    { href: "/dashboard/doctor", label: "Doctor", icon: BookOpen },
+    { href: "/dashboard/admin", label: "Admin", icon: Clock },
   ]
 
   // Sidebar variants for animation
