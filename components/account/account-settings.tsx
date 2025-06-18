@@ -15,6 +15,7 @@ import { useRouter } from "next/navigation";
 import type { User } from "@supabase/supabase-js";
 // import Avatar from '@/app/account/avatar'
 import { useAccount } from 'wagmi'
+import { useDisconnect } from 'wagmi'
 
 
 interface UserProfile {
@@ -34,6 +35,7 @@ export function AccountSettings({ user }: { user: User | null }) {
   //wallet profile
   const account = useAccount()
   const walletAddress = account?.address || "";
+  const { disconnect } = useDisconnect()
 
   // Profile states
   const [loading, setLoading] = useState(true);
@@ -144,9 +146,13 @@ export function AccountSettings({ user }: { user: User | null }) {
   };
 
   const logout = async () => {
+    await disconnect();
     await supabase.auth.signOut();
     router.push("/");
   };
+
+  // For wallet input, show connected wallet if available, otherwise show wallet from Supabase
+  const displayedWalletAddress = walletAddress || wallet;
 
   return (
     <div className="h-full">
@@ -270,17 +276,19 @@ export function AccountSettings({ user }: { user: User | null }) {
                     <Input
                       id="wallet"
                       type="text"
-                      value={walletAddress}
+                      value={displayedWalletAddress}
                       disabled
                       className="opacity-50"
                     />
                     <Button
                       className="w-fit mt-2"
                       variant="secondary"
-                      onClick={() => setWallet(walletAddress)}
-                      disabled={walletAddress === wallet}
+                      onClick={() => {
+                        if (walletAddress) setWallet(walletAddress);
+                      }}
+                      disabled={!walletAddress || walletAddress === wallet}
                     >
-                      {walletAddress === wallet ? "Wallet Saved" : "Use This Wallet"}
+                      {!walletAddress ? "No Wallet Connected" : walletAddress === wallet ? "Wallet Saved" : "Use This Wallet"}
                     </Button>
                   </div>
 
