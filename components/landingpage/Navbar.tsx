@@ -39,7 +39,7 @@ const Navbar = () => {
             <div className="h-9 w-9 rounded-lg bg-gradient-to-br from-v4-purple to-v4-blue flex items-center justify-center transition-all duration-300 group-hover:scale-105">
               <Image src="/logo.png" width={40} height={40} alt="V4 Logo"/>
             </div>
-            <span className="text-2xl font-bold text-white transition-colors duration-300 group-hover:text-v4-purple">V4</span>
+            <span className="text-2xl font-bold text-white transition-colors duration-300 group-hover:text-v4-purple">DAVA</span>
           </div>
         </Link>
 

@@ -29,11 +29,11 @@
     --cyan: 180 100% 50%;
     --purple: 270 94% 65%;
     --blue: 217 91% 60%;
-    --v4-dark: hsl(224, 5%, 11%); 
+    --v4-dark: hsl(224, 5%, 11%);
     --v4-purple: hsl(270, 94%, 65%);
     --v4-blue: hsl(217, 91%, 60%);
     --v4-purple-rgb: 168, 85, 247;
-    --v4-blue-rgb: 59, 130, 246;   
+    --v4-blue-rgb: 59, 130, 246;
   }
 
   .dark {
@@ -71,7 +71,6 @@
   body {
     @apply bg-background text-foreground;
   }
-  
 }
 
 /* Custom styles for StudySync */
@@ -192,13 +191,41 @@
   .text-gradient {
     @apply bg-clip-text text-transparent bg-gradient-to-r from-v4-purple to-v4-blue;
   }
-  .glass-card { 
-    @apply bg-white/10 backdrop-blur-md border border-white/10; 
+  .glass-card {
+    @apply bg-white/10 backdrop-blur-md border border-white/10;
   }
-  .animate-float { /* Basic float animation example */
+  .animate-float {
+    /* Basic float animation example */
     animation: float 6s ease-in-out infinite;
   }
   .glass-card {
-    @apply bg-slate-800/40 backdrop-blur-lg; 
+    @apply bg-slate-800/40 backdrop-blur-lg;
   }
+}
+
+@keyframes blob {
+  0% {
+    transform: translate(0px, 0px) scale(1);
+  }
+  33% {
+    transform: translate(30px, -50px) scale(1.1);
+  }
+  66% {
+    transform: translate(-20px, 20px) scale(0.9);
+  }
+  100% {
+    transform: translate(0px, 0px) scale(1);
+  }
+}
+
+.animate-blob {
+  animation: blob 7s infinite;
+}
+
+.animation-delay-2000 {
+  animation-delay: 2s;
+}
+
+.animation-delay-4000 {
+  animation-delay: 4s;
 }
