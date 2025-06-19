@@ -1,4 +1,4 @@
-
+"use client";
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -20,7 +20,7 @@ const DiagnosisSubmission = () => {
     severity: '',
     notes: ''
   });
-  const [selectedFile, setSelectedFile] = useState(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   // TODO: Fetch appointments requiring diagnosis from Supabase
   const pendingAppointments = [
@@ -42,8 +42,8 @@ const DiagnosisSubmission = () => {
     }
   ];
 
-  const handleFileSelect = (event) => {
-    const file = event.target.files[0];
+  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
     if (file) {
       setSelectedFile(file);
     }
@@ -267,7 +267,7 @@ const DiagnosisSubmission = () => {
             {selectedFile && (
               <p className="text-sm text-gray-600 mt-2 flex items-center space-x-2">
                 <Upload className="h-4 w-4" />
-                <span>{selectedFile.name} ({(selectedFile.size / 1024 / 1024).toFixed(2)} MB)</span>
+                <span>{selectedFile.name} ({(selectedFile.size / 1024 / 1024).toFixed(2)} MB) asd</span>
               </p>
             )}
             <p className="text-xs text-gray-500 mt-1">

@@ -1,4 +1,4 @@
-
+"use client";
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -52,18 +52,18 @@ const AppointmentQueue = () => {
     }
   ];
 
-  const getStatusBadge = (status) => {
+  const getStatusBadge = (status: string) => {
     const statusConfig = {
       'booked': { label: 'Scheduled', variant: 'secondary' },
       'awaiting_diagnosis': { label: 'Needs Diagnosis', variant: 'destructive' },
       'completed': { label: 'Completed', variant: 'outline' }
     };
     
-    const config = statusConfig[status] || { label: status, variant: 'secondary' };
-    return <Badge variant={config.variant}>{config.label}</Badge>;
+    const config = statusConfig[status as keyof typeof statusConfig] || { label: status, variant: 'secondary' };
+    return <Badge variant={config.variant as any}>{config.label}</Badge>;
   };
 
-  const handleViewRecords = async (patientId, bookingId) => {
+  const handleViewRecords = async (patientId: string, bookingId: string) => {
     // TODO: Fetch patient records from Supabase and IPFS
     // const { data: records } = await supabase
     //   .from('medical_records')
@@ -73,7 +73,7 @@ const AppointmentQueue = () => {
     console.log(`Viewing records for patient ${patientId}, booking ${bookingId}`);
   };
 
-  const handleStartConsultation = async (appointmentId) => {
+  const handleStartConsultation = async (appointmentId: string) => {
     // TODO: Update appointment status in Supabase
     // const { error } = await supabase
     //   .from('appointments')
@@ -94,52 +94,6 @@ const AppointmentQueue = () => {
 
   return (
     <div className="space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
-            <Calendar className="h-5 w-5" />
-            <span>Appointment Queue</span>
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="relative">
-              <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-              <Input
-                placeholder="Search patients or booking ID..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
-              />
-            </div>
-            <div>
-              <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Filter by status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Status</SelectItem>
-                  <SelectItem value="booked">Scheduled</SelectItem>
-                  <SelectItem value="awaiting_diagnosis">Needs Diagnosis</SelectItem>
-                  <SelectItem value="completed">Completed</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Select value={dateFilter} onValueChange={setDateFilter}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Filter by date" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Dates</SelectItem>
-                  <SelectItem value="2024-01-20">Today</SelectItem>
-                  <SelectItem value="2024-01-21">Tomorrow</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
 
       <div className="space-y-4">
         {filteredAppointments.map(appointment => (

@@ -1,4 +1,4 @@
-
+"use client";
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -64,34 +64,34 @@ const TreatmentHistory = () => {
     }
   ];
 
-  const getStatusBadge = (status) => {
+  const getStatusBadge = (status: string) => {
     const statusConfig = {
       'completed': { label: 'Completed', variant: 'default' },
       'ongoing': { label: 'Ongoing', variant: 'secondary' },
       'follow_up': { label: 'Follow-up Required', variant: 'destructive' }
     };
     
-    const config = statusConfig[status] || { label: status, variant: 'secondary' };
-    return <Badge variant={config.variant}>{config.label}</Badge>;
+    const config = statusConfig[status as keyof typeof statusConfig] || { label: status, variant: 'secondary' };
+    return <Badge variant={config.variant as any}>{config.label}</Badge>;
   };
 
-  const getSeverityBadge = (severity) => {
+  const getSeverityBadge = (severity: string) => {
     const severityConfig = {
       'mild': { label: 'Mild', variant: 'outline' },
       'moderate': { label: 'Moderate', variant: 'secondary' },
       'severe': { label: 'Severe', variant: 'destructive' }
     };
     
-    const config = severityConfig[severity] || { label: severity, variant: 'outline' };
-    return <Badge variant={config.variant}>{config.label}</Badge>;
+    const config = severityConfig[severity as keyof typeof severityConfig] || { label: severity, variant: 'outline' };
+    return <Badge variant={config.variant as any}>{config.label}</Badge>;
   };
 
-  const handleViewReport = (treatmentId) => {
+  const handleViewReport = (treatmentId: string) => {
     // TODO: Open treatment report from IPFS
     console.log(`Viewing report for treatment ${treatmentId}`);
   };
 
-  const handleViewNFT = (bookingId) => {
+  const handleViewNFT = (bookingId: string) => {
     // TODO: View NFT on blockchain explorer
     console.log(`Viewing NFT for booking ${bookingId}`);
   };

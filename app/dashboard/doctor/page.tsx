@@ -1,15 +1,33 @@
-'use client'
-import React, { useState } from 'react';
-import { User, Calendar, FileText, History } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import DoctorProfile from '../../../components-for-dash/doctor/DoctorProfile';
-import AppointmentQueue from '../../../components-for-dash/doctor/AppointmentQueue';
-import DiagnosisSubmission from '../../../components-for-dash/doctor/DiagnosisSubmission';
-import TreatmentHistory from '../../../components-for-dash/doctor/TreatmentHistory';
+"use client";
+import React from "react";
+import { useRouter, usePathname } from "next/navigation";
+import { User, Calendar, FileText, History } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import DoctorProfile from "../../../components-for-dash/doctor/DoctorProfile";
 
 const DoctorDashboard = () => {
-  const [activeTab, setActiveTab] = useState('profile');
+  const router = useRouter();
+  const pathname = usePathname();
+
+  // Determine the active tab from the path
+  let activeTab = "profile";
+  if (pathname.endsWith("/queue")) activeTab = "queue";
+  else if (pathname.endsWith("/diagnosis")) activeTab = "diagnosis";
+  else if (pathname.endsWith("/history")) activeTab = "history";
+
+  // Handle tab change
+  const handleTabChange = (value: string) => {
+    if (value === "queue") {
+      router.push("/dashboard/doctor/queue");
+    } else if (value === "diagnosis") {
+      router.push("/dashboard/doctor/diagnosis");
+    } else if (value === "history") {
+      router.push("/dashboard/doctor/history");
+    } else {
+      router.push("/dashboard/doctor");
+    }
+  };
 
   // TODO: Fetch doctor data from Supabase
   const doctorData = {
@@ -18,7 +36,7 @@ const DoctorDashboard = () => {
     hospital: "City General Hospital",
     pendingAppointments: 8,
     completedToday: 5,
-    awaitingDiagnosis: 3
+    awaitingDiagnosis: 3,
   };
 
   return (
@@ -33,7 +51,9 @@ const DoctorDashboard = () => {
             <CardContent className="p-4">
               <div className="flex items-center space-x-2">
                 <Calendar className="h-5 w-5 text-blue-600" />
-                <span className="text-sm font-medium">{doctorData.pendingAppointments} Pending</span>
+                <span className="text-sm font-medium">
+                  {doctorData.pendingAppointments} Pending
+                </span>
               </div>
             </CardContent>
           </Card>
@@ -41,14 +61,20 @@ const DoctorDashboard = () => {
             <CardContent className="p-4">
               <div className="flex items-center space-x-2">
                 <FileText className="h-5 w-5 text-green-600" />
-                <span className="text-sm font-medium">{doctorData.awaitingDiagnosis} Awaiting Diagnosis</span>
+                <span className="text-sm font-medium">
+                  {doctorData.awaitingDiagnosis} Awaiting Diagnosis
+                </span>
               </div>
             </CardContent>
           </Card>
         </div>
       </div>
 
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+      <Tabs
+        value={activeTab}
+        onValueChange={handleTabChange}
+        className="space-y-6"
+      >
         <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="profile" className="flex items-center space-x-2">
             <User className="h-4 w-4" />
@@ -58,7 +84,10 @@ const DoctorDashboard = () => {
             <Calendar className="h-4 w-4" />
             <span>Appointment Queue</span>
           </TabsTrigger>
-          <TabsTrigger value="diagnosis" className="flex items-center space-x-2">
+          <TabsTrigger
+            value="diagnosis"
+            className="flex items-center space-x-2"
+          >
             <FileText className="h-4 w-4" />
             <span>Submit Diagnosis</span>
           </TabsTrigger>
@@ -71,18 +100,11 @@ const DoctorDashboard = () => {
         <TabsContent value="profile">
           <DoctorProfile />
         </TabsContent>
-
-        <TabsContent value="queue">
-          <AppointmentQueue />
-        </TabsContent>
-
+        <TabsContent value="queue">{/* handled by /queue */}</TabsContent>
         <TabsContent value="diagnosis">
-          <DiagnosisSubmission />
+          {/* handled by /diagnosis */}
         </TabsContent>
-
-        <TabsContent value="history">
-          <TreatmentHistory />
-        </TabsContent>
+        <TabsContent value="history">{/* handled by /history */}</TabsContent>
       </Tabs>
     </div>
   );
