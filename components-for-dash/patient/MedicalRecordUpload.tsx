@@ -1,4 +1,4 @@
-
+"use client";
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -10,7 +10,7 @@ import { Upload, FileText, Download, ExternalLink } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 
 const MedicalRecordUpload = () => {
-  const [selectedFile, setSelectedFile] = useState(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [recordTitle, setRecordTitle] = useState('');
   const [recordDescription, setRecordDescription] = useState('');
 
@@ -45,8 +45,8 @@ const MedicalRecordUpload = () => {
     }
   ];
 
-  const handleFileSelect = (event) => {
-    const file = event.target.files[0];
+  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
     if (file) {
       setSelectedFile(file);
     }
@@ -90,7 +90,7 @@ const MedicalRecordUpload = () => {
     setRecordDescription('');
   };
 
-  const handleViewFile = (ipfsHash) => {
+  const handleViewFile = (ipfsHash: string) => {
     // TODO: Open IPFS file in new tab
     // window.open(`https://ipfs.io/ipfs/${ipfsHash}`, '_blank');
     toast({
@@ -99,14 +99,14 @@ const MedicalRecordUpload = () => {
     });
   };
 
-  const getFileTypeColor = (fileType) => {
+  const getFileTypeColor = (fileType: string) => {
     const colors = {
       'PDF': 'bg-red-100 text-red-800',
       'DICOM': 'bg-blue-100 text-blue-800',
       'JPG': 'bg-green-100 text-green-800',
       'PNG': 'bg-green-100 text-green-800'
     };
-    return colors[fileType] || 'bg-gray-100 text-gray-800';
+    return colors[fileType as keyof typeof colors] || 'bg-gray-100 text-gray-800';
   };
 
   return (
@@ -130,7 +130,7 @@ const MedicalRecordUpload = () => {
               />
               {selectedFile && (
                 <p className="text-sm text-gray-600 mt-1">
-                  Selected: {selectedFile.name} ({(selectedFile.size / 1024 / 1024).toFixed(2)} MB)
+                  Selected: {selectedFile.name} ({(selectedFile.size / 1024 / 1024).toFixed(2)} MB) asd
                 </p>
               )}
             </div>
@@ -173,7 +173,7 @@ const MedicalRecordUpload = () => {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {medicalRecords.map(record => (
+            {medicalRecords.map((record: any)  => (
               <div key={record.id} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
                 <div className="flex items-start justify-between">
                   <div className="flex-1">

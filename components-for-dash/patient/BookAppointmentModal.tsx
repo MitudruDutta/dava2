@@ -8,8 +8,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Calendar } from '@/components/ui/calendar';
 import { toast } from '@/hooks/use-toast';
 
-const BookAppointmentModal = ({ doctor, isOpen, onClose }) => {
-  const [selectedDate, setSelectedDate] = useState(null);
+const BookAppointmentModal = ({ doctor, isOpen, onClose }: { doctor: any, isOpen: boolean, onClose: () => void }) => {
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTime, setSelectedTime] = useState('');
   const [reason, setReason] = useState('');
   const [symptoms, setSymptoms] = useState('');
@@ -75,8 +75,8 @@ const BookAppointmentModal = ({ doctor, isOpen, onClose }) => {
               <Label className="text-base font-semibold">Select Date</Label>
               <Calendar
                 mode="single"
-                selected={selectedDate}
-                onSelect={setSelectedDate}
+                selected={selectedDate || undefined}
+                onSelect={(date) => setSelectedDate(date || null)}
                 disabled={(date) => date < new Date() || date.getDay() === 0}
                 className="rounded-md border"
               />
@@ -86,7 +86,7 @@ const BookAppointmentModal = ({ doctor, isOpen, onClose }) => {
               <div>
                 <Label className="text-base font-semibold">Available Times</Label>
                 <div className="grid grid-cols-3 gap-2 mt-2">
-                  {availableTimes.map(time => (
+                  {availableTimes.map((time: string) => (
                     <Button
                       key={time}
                       variant={selectedTime === time ? "default" : "outline"}

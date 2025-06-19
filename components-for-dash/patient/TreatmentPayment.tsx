@@ -1,4 +1,4 @@
-
+"use client";
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -42,7 +42,7 @@ const TreatmentPayment = () => {
     }
   ];
 
-  const handlePayment = async (paymentRequest) => {
+  const handlePayment = async (paymentRequest: any) => {
     // TODO: Integrate with smart contract for payment
     // 1. Connect to Web3 wallet
     // 2. Call smart contract payment function
@@ -62,7 +62,7 @@ const TreatmentPayment = () => {
     }, 2000);
   };
 
-  const getStatusBadge = (status) => {
+  const getStatusBadge = (status: string) => {
     if (status === 'pending') {
       return <Badge variant="destructive" className="flex items-center space-x-1">
         <Clock className="h-3 w-3" />
@@ -75,7 +75,7 @@ const TreatmentPayment = () => {
     </Badge>;
   };
 
-  const viewTransaction = (hash) => {
+  const viewTransaction = (hash: string) => {
     // TODO: Open blockchain explorer
     toast({
       title: "Transaction Details",

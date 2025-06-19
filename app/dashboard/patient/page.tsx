@@ -7,18 +7,40 @@ import {
   Search,
   CreditCard,
   Award,
+  Link,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import PatientProfile from "../../../components-for-dash/patient/PatientProfile";
 import DoctorSearch from "../../../components-for-dash/patient/DoctorSearch";
-import AppointmentStatus from "../../../components-for-dash/patient/AppointmentStatus";
-import MedicalRecordUpload from "../../../components-for-dash/patient/MedicalRecordUpload";
-import TreatmentPayment from "../../../components-for-dash/patient/TreatmentPayment";
-import NFTViewer from "../../../components-for-dash/patient/NFTViewer";
+import { useRouter, usePathname } from "next/navigation";
 
 const PatientDashboard = () => {
-  const [activeTab, setActiveTab] = useState("profile");
+  const router = useRouter();
+  const pathname = usePathname();
+
+  // Determine the active tab from the path
+  let activeTab = "profile";
+  if (pathname.endsWith("/appointment")) activeTab = "appointments";
+  else if (pathname.endsWith("/records")) activeTab = "records";
+  else if (pathname.endsWith("/payments")) activeTab = "payments";
+  else if (pathname.endsWith("/nfts")) activeTab = "nfts";
+  // Add more if you want to support other tabs as routes
+
+  // Handle tab change
+  const handleTabChange = (value: string) => {
+    if (value === "appointments") {
+      router.push("/dashboard/patient/appointment");
+    } else if (value === "records") {
+      router.push("/dashboard/patient/records");
+    } else if (value === "payments") {
+      router.push("/dashboard/patient/payments");
+    } else if (value === "nfts") {
+      router.push("/dashboard/patient/nfts");
+    } else {
+      router.push("/dashboard/patient");
+    }
+  };
 
   // TODO: Fetch patient data from Supabase
   const patientData = {
@@ -54,7 +76,7 @@ const PatientDashboard = () => {
 
       <Tabs
         value={activeTab}
-        onValueChange={setActiveTab}
+        onValueChange={handleTabChange}
         className="space-y-6"
       >
         <TabsList className="grid w-full grid-cols-6">
@@ -88,7 +110,7 @@ const PatientDashboard = () => {
         </TabsList>
 
         <TabsContent value="profile">
-          <PatientProfile />
+          <PatientProfile setActiveTab={() => {}} />
         </TabsContent>
 
         <TabsContent value="search">
@@ -96,20 +118,14 @@ const PatientDashboard = () => {
         </TabsContent>
 
         <TabsContent value="appointments">
-          <AppointmentStatus />
+          {/* handled by /appointment */}
         </TabsContent>
 
-        <TabsContent value="records">
-          <MedicalRecordUpload />
-        </TabsContent>
+        <TabsContent value="records">{/* handled by /records */}</TabsContent>
 
-        <TabsContent value="payments">
-          <TreatmentPayment />
-        </TabsContent>
+        <TabsContent value="payments">{/* handled by /payments */}</TabsContent>
 
-        <TabsContent value="nfts">
-          <NFTViewer />
-        </TabsContent>
+        <TabsContent value="nfts">{/* handled by /nfts */}</TabsContent>
       </Tabs>
     </div>
   );

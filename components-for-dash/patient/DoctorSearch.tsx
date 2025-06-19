@@ -55,7 +55,7 @@ const DoctorSearch = () => {
   const specialties = ['Cardiology', 'Neurology', 'Dermatology', 'Orthopedics', 'Pediatrics'];
   const locations = ['New York, NY', 'Los Angeles, CA', 'Miami, FL', 'Chicago, IL', 'Houston, TX'];
 
-  const handleBookAppointment = (doctor) => {
+  const handleBookAppointment = (doctor: any) => {
     setSelectedDoctor(doctor);
     setIsBookingModalOpen(true);
   };

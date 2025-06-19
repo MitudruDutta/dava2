@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Calendar,
   FileText,
@@ -15,9 +15,23 @@ import AppointmentStatus from "../patient/AppointmentStatus";
 import MedicalRecordUpload from "../patient/MedicalRecordUpload";
 import TreatmentPayment from "../patient/TreatmentPayment";
 import NFTViewer from "../patient/NFTViewer";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const PatientDashboard = () => {
-  const [activeTab, setActiveTab] = useState("profile");
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [tab, setTab] = useState("profile");
+
+  useEffect(() => {
+    // Only run on client
+    const urlTab = searchParams.get("tab");
+    setTab(urlTab || "profile");
+  }, [searchParams]);
+
+  const handleTabChange = (value: string) => {
+    setTab(value);
+    router.push(`?tab=${value}`);
+  };
 
   // TODO: Fetch patient data from Supabase
   const patientData = {
@@ -51,11 +65,7 @@ const PatientDashboard = () => {
         </div>
       </div>
 
-      <Tabs
-        value={activeTab}
-        onValueChange={setActiveTab}
-        className="space-y-6"
-      >
+      <Tabs value={tab} onValueChange={handleTabChange} className="space-y-6">
         <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="profile" className="flex items-center space-x-2">
             <User className="h-4 w-4" />
@@ -87,7 +97,7 @@ const PatientDashboard = () => {
         </TabsList>
 
         <TabsContent value="profile">
-          <PatientProfile setActiveTab={setActiveTab} />
+          <PatientProfile setActiveTab={handleTabChange} />
         </TabsContent>
 
         <TabsContent value="search">

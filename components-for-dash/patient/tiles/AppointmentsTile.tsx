@@ -3,8 +3,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, Clock, User } from "lucide-react";
+import { useRouter } from "next/navigation";
 
-const AppointmentsTile = ({ setActiveTab }: { setActiveTab: (tab: string) => void }) => {
+const AppointmentsTile = ({
+  setActiveTab,
+}: {
+  setActiveTab: (tab: string) => void;
+}) => {
+  const router = useRouter();
   // TODO: Fetch most recent appointment from Supabase
   const recentAppointment = {
     id: "APT001",
@@ -74,7 +80,12 @@ const AppointmentsTile = ({ setActiveTab }: { setActiveTab: (tab: string) => voi
         </div>
 
         <div className="pt-2 border-t">
-          <Button variant="outline" className="w-full" size="sm">
+          <Button
+            variant="outline"
+            className="w-full"
+            size="sm"
+            onClick={() => router.push("?tab=appointments")}
+          >
             View All Appointments
           </Button>
         </div>

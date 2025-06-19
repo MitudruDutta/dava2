@@ -1,4 +1,4 @@
-
+"use client";
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -53,7 +53,7 @@ const NFTViewer = () => {
     }
   ];
 
-  const viewOnBlockchain = (transactionHash) => {
+  const viewOnBlockchain = (transactionHash: string) => {
     // TODO: Open blockchain explorer
     toast({
       title: "Opening Blockchain Explorer",
@@ -61,7 +61,7 @@ const NFTViewer = () => {
     });
   };
 
-  const viewMetadata = (ipfsHash) => {
+  const viewMetadata = (ipfsHash: string) => {
     // TODO: Open IPFS metadata
     toast({
       title: "Opening IPFS Metadata",
@@ -69,7 +69,7 @@ const NFTViewer = () => {
     });
   };
 
-  const downloadCertificate = (nft) => {
+  const downloadCertificate = (nft: any) => {
     // TODO: Generate and download PDF certificate
     toast({
       title: "Generating Certificate",

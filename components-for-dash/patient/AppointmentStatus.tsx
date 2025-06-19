@@ -1,4 +1,4 @@
-
+"use client";
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -56,7 +56,7 @@ const AppointmentStatus = () => {
     }
   ];
 
-  const getStatusBadge = (status) => {
+  const getStatusBadge = (status: string) => {
     const statusConfig = {
       'booked': { label: 'Booked', variant: 'secondary' },
       'awaiting_diagnosis': { label: 'Awaiting Diagnosis', variant: 'default' },
@@ -64,16 +64,16 @@ const AppointmentStatus = () => {
       'completed': { label: 'Completed', variant: 'outline' }
     };
     
-    const config = statusConfig[status] || { label: status, variant: 'secondary' };
-    return <Badge variant={config.variant}>{config.label}</Badge>;
+    const config = statusConfig[status as keyof typeof statusConfig] || { label: status, variant: 'secondary' };
+    return <Badge variant={config.variant as any}>{config.label}</Badge>;
   };
 
-  const filterAppointments = (status) => {
+  const filterAppointments = (status: string) => {
     if (status === 'all') return appointments;
     return appointments.filter(apt => apt.status === status);
   };
 
-  const AppointmentCard = ({ appointment }) => (
+  const AppointmentCard = ({ appointment }: { appointment: any }) => (
     <Card className="mb-4">
       <CardContent className="p-6">
         <div className="flex items-start justify-between">
