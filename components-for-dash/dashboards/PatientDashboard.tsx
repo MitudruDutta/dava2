@@ -1,17 +1,23 @@
-
-import React, { useState } from 'react';
-import { Calendar, FileText, User, Search, CreditCard, Award } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import PatientProfile from '../patient/PatientProfile';
-import DoctorSearch from '../patient/DoctorSearch';
-import AppointmentStatus from '../patient/AppointmentStatus';
-import MedicalRecordUpload from '../patient/MedicalRecordUpload';
-import TreatmentPayment from '../patient/TreatmentPayment';
-import NFTViewer from '../patient/NFTViewer';
+import React, { useState } from "react";
+import {
+  Calendar,
+  FileText,
+  User,
+  Search,
+  CreditCard,
+  Award,
+} from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import PatientProfile from "../patient/PatientProfile";
+import DoctorSearch from "../patient/DoctorSearch";
+import AppointmentStatus from "../patient/AppointmentStatus";
+import MedicalRecordUpload from "../patient/MedicalRecordUpload";
+import TreatmentPayment from "../patient/TreatmentPayment";
+import NFTViewer from "../patient/NFTViewer";
 
 const PatientDashboard = () => {
-  const [activeTab, setActiveTab] = useState('profile');
+  const [activeTab, setActiveTab] = useState("profile");
 
   // TODO: Fetch patient data from Supabase
   const patientData = {
@@ -19,14 +25,16 @@ const PatientDashboard = () => {
     email: "john.doe@email.com",
     appointments: 3,
     records: 5,
-    pendingPayments: 2
+    pendingPayments: 2,
   };
 
   return (
     <div className="container mx-auto p-6 space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Patient Dashboard</h1>
+          <h1 className="text-3xl font-bold text-gray-900">
+            Patient Dashboard
+          </h1>
           <p className="text-gray-600">Welcome back, {patientData.name}</p>
         </div>
         <div className="flex items-center space-x-4">
@@ -34,14 +42,20 @@ const PatientDashboard = () => {
             <CardContent className="p-4">
               <div className="flex items-center space-x-2">
                 <Calendar className="h-5 w-5 text-blue-600" />
-                <span className="text-sm font-medium">{patientData.appointments} Appointments</span>
+                <span className="text-sm font-medium">
+                  {patientData.appointments} Appointments
+                </span>
               </div>
             </CardContent>
           </Card>
         </div>
       </div>
 
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+      <Tabs
+        value={activeTab}
+        onValueChange={setActiveTab}
+        className="space-y-6"
+      >
         <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="profile" className="flex items-center space-x-2">
             <User className="h-4 w-4" />
@@ -51,7 +65,10 @@ const PatientDashboard = () => {
             <Search className="h-4 w-4" />
             <span>Find Doctors</span>
           </TabsTrigger>
-          <TabsTrigger value="appointments" className="flex items-center space-x-2">
+          <TabsTrigger
+            value="appointments"
+            className="flex items-center space-x-2"
+          >
             <Calendar className="h-4 w-4" />
             <span>Appointments</span>
           </TabsTrigger>
@@ -70,7 +87,7 @@ const PatientDashboard = () => {
         </TabsList>
 
         <TabsContent value="profile">
-          <PatientProfile />
+          <PatientProfile setActiveTab={setActiveTab} />
         </TabsContent>
 
         <TabsContent value="search">
