@@ -1,4 +1,4 @@
-
+"use client";
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -69,12 +69,12 @@ const PaymentTracking = () => {
     pendingPayments: payments.filter(p => p.status === 'pending').length
   };
 
-  const handleViewTransaction = (transactionHash) => {
+  const handleViewTransaction = (transactionHash: string) => {
     // TODO: Open blockchain explorer
     window.open(`https://etherscan.io/tx/${transactionHash}`, '_blank');
   };
 
-  const getStatusBadge = (status, daysOverdue = 0) => {
+  const getStatusBadge = (status: string, daysOverdue = 0) => {
     if (status === 'completed') {
       return <Badge variant="default" className="bg-green-600">Completed</Badge>;
     }
@@ -229,7 +229,7 @@ const PaymentTracking = () => {
                           <p><strong>Gas Used:</strong> {payment.gasUsed}</p>
                         </>
                       )}
-                      {payment.daysOverdue > 0 && (
+                      {payment.daysOverdue && payment.daysOverdue > 0 && (
                         <p className="text-red-600"><strong>Days Overdue:</strong> {payment.daysOverdue}</p>
                       )}
                     </div>

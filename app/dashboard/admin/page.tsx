@@ -1,16 +1,36 @@
-'use client'
-import React, { useState } from "react";
+"use client";
+import React from "react";
+import { useRouter, usePathname } from "next/navigation";
 import { Shield, Users, Calendar, CreditCard, Bell } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import RoleVerification from "../../../components-for-dash/admin/RoleVerification";
-import HospitalManagement from "../../../components-for-dash/admin/HospitalManagement";
 import AppointmentManagement from "../../../components-for-dash/admin/AppointmentManagement";
 import PaymentTracking from "../../../components-for-dash/admin/PaymentTracking";
-import NotificationConsole from "../../../components-for-dash/admin/NotificationConsole";
+import AdminProfileBento from "../../../components-for-dash/admin/AdminProfileBento";
 
 const Page = () => {
-  const [activeTab, setActiveTab] = useState("roles");
+  const router = useRouter();
+  const pathname = usePathname();
+
+  // Determine the active tab from the path
+  let activeTab = "profile";
+  if (pathname.endsWith("/roles")) activeTab = "roles";
+  else if (pathname.endsWith("/appointments")) activeTab = "appointments";
+  else if (pathname.endsWith("/payments")) activeTab = "payments";
+
+  // Handle tab change
+  const handleTabChange = (value: string) => {
+    if (value === "roles") {
+      router.push("/dashboard/admin/roles");
+    } else if (value === "appointments") {
+      router.push("/dashboard/admin/appointments");
+    } else if (value === "payments") {
+      router.push("/dashboard/admin/payments");
+    } else {
+      router.push("/dashboard/admin");
+    }
+  };
 
   // TODO: Fetch admin statistics from Supabase
   const adminStats = {
@@ -54,20 +74,17 @@ const Page = () => {
 
       <Tabs
         value={activeTab}
-        onValueChange={setActiveTab}
+        onValueChange={handleTabChange}
         className="space-y-6"
       >
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-4">
+          <TabsTrigger value="profile" className="flex items-center space-x-2">
+            <Users className="h-4 w-4" />
+            <span>Profile</span>
+          </TabsTrigger>
           <TabsTrigger value="roles" className="flex items-center space-x-2">
             <Shield className="h-4 w-4" />
             <span>Role Verification</span>
-          </TabsTrigger>
-          <TabsTrigger
-            value="hospitals"
-            className="flex items-center space-x-2"
-          >
-            <Users className="h-4 w-4" />
-            <span>Hospital Management</span>
           </TabsTrigger>
           <TabsTrigger
             value="appointments"
@@ -80,34 +97,16 @@ const Page = () => {
             <CreditCard className="h-4 w-4" />
             <span>Payments</span>
           </TabsTrigger>
-          <TabsTrigger
-            value="notifications"
-            className="flex items-center space-x-2"
-          >
-            <Bell className="h-4 w-4" />
-            <span>Notifications</span>
-          </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="roles">
-          <RoleVerification />
+        <TabsContent value="profile">
+          <AdminProfileBento />
         </TabsContent>
-
-        <TabsContent value="hospitals">
-          <HospitalManagement />
-        </TabsContent>
-
+        <TabsContent value="roles">{/* handled by /roles */}</TabsContent>
         <TabsContent value="appointments">
-          <AppointmentManagement />
+          {/* handled by /appointments */}
         </TabsContent>
-
-        <TabsContent value="payments">
-          <PaymentTracking />
-        </TabsContent>
-
-        <TabsContent value="notifications">
-          <NotificationConsole />
-        </TabsContent>
+        <TabsContent value="payments">{/* handled by /payments */}</TabsContent>
       </Tabs>
     </div>
   );

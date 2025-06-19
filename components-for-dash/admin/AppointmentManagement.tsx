@@ -1,4 +1,4 @@
-
+"use client";
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -69,7 +69,7 @@ const AppointmentManagement = () => {
     }
   ];
 
-  const handleRequestPayment = async (appointmentId, amount = 150) => {
+  const handleRequestPayment = async (appointmentId: string, amount = 150) => {
     // TODO: Create payment request in Supabase
     // const { error } = await supabase
     //   .from('payment_requests')
@@ -93,7 +93,7 @@ const AppointmentManagement = () => {
     });
   };
 
-  const handleMintNFT = async (appointmentId, bookingId) => {
+  const handleMintNFT = async (appointmentId: string, bookingId: string) => {
     // TODO: Mint NFT on blockchain with appointment data
     // 1. Gather all appointment and diagnosis data
     // 2. Upload metadata to IPFS
@@ -121,7 +121,7 @@ const AppointmentManagement = () => {
     });
   };
 
-  const getStatusBadge = (status) => {
+  const getStatusBadge = (status: string) => {
     const statusConfig = {
       'booked': { label: 'Booked', variant: 'secondary' },
       'in_progress': { label: 'In Progress', variant: 'default' },
@@ -130,18 +130,18 @@ const AppointmentManagement = () => {
       'nft_minted': { label: 'NFT Minted', variant: 'outline' }
     };
     
-    const config = statusConfig[status] || { label: status, variant: 'secondary' };
-    return <Badge variant={config.variant}>{config.label}</Badge>;
+    const config = statusConfig[status as keyof typeof statusConfig] || { label: status, variant: 'secondary' };
+    return <Badge variant={config.variant as any}>{config.label}</Badge>;
   };
 
-  const getPaymentBadge = (paymentStatus) => {
+  const getPaymentBadge = (paymentStatus: string) => {
     const statusConfig = {
       'pending': { label: 'Payment Pending', variant: 'destructive' },
       'paid': { label: 'Paid', variant: 'default' }
     };
     
-    const config = statusConfig[paymentStatus] || { label: paymentStatus, variant: 'secondary' };
-    return <Badge variant={config.variant}>{config.label}</Badge>;
+    const config = statusConfig[paymentStatus as keyof typeof statusConfig] || { label: paymentStatus, variant: 'secondary' };
+    return <Badge variant={config.variant as any}>{config.label}</Badge>;
   };
 
   const filteredAppointments = appointments.filter(appointment => {

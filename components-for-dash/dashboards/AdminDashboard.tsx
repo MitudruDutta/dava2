@@ -1,16 +1,13 @@
-
-import React, { useState } from 'react';
-import { Shield, Users, Calendar, CreditCard, Bell } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import RoleVerification from '../admin/RoleVerification';
-import HospitalManagement from '../admin/HospitalManagement';
-import AppointmentManagement from '../admin/AppointmentManagement';
-import PaymentTracking from '../admin/PaymentTracking';
-import NotificationConsole from '../admin/NotificationConsole';
+import React, { useState } from "react";
+import { Shield, Users, Calendar, CreditCard, Bell } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import RoleVerification from "../admin/RoleVerification";
+import AppointmentManagement from "../admin/AppointmentManagement";
+import PaymentTracking from "../admin/PaymentTracking";
 
 const AdminDashboard = () => {
-  const [activeTab, setActiveTab] = useState('roles');
+  const [activeTab, setActiveTab] = useState("roles");
 
   // TODO: Fetch admin statistics from Supabase
   const adminStats = {
@@ -18,7 +15,7 @@ const AdminDashboard = () => {
     totalDoctors: 145,
     totalHospitals: 23,
     pendingPayments: 8,
-    totalTransactions: 1247
+    totalTransactions: 1247,
   };
 
   return (
@@ -33,7 +30,9 @@ const AdminDashboard = () => {
             <CardContent className="p-4">
               <div className="flex items-center space-x-2">
                 <Shield className="h-5 w-5 text-red-600" />
-                <span className="text-sm font-medium">{adminStats.pendingVerifications} Pending</span>
+                <span className="text-sm font-medium">
+                  {adminStats.pendingVerifications} Pending
+                </span>
               </div>
             </CardContent>
           </Card>
@@ -41,24 +40,36 @@ const AdminDashboard = () => {
             <CardContent className="p-4">
               <div className="flex items-center space-x-2">
                 <Users className="h-5 w-5 text-blue-600" />
-                <span className="text-sm font-medium">{adminStats.totalDoctors} Doctors</span>
+                <span className="text-sm font-medium">
+                  {adminStats.totalDoctors} Doctors
+                </span>
               </div>
             </CardContent>
           </Card>
         </div>
       </div>
 
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+      <Tabs
+        value={activeTab}
+        onValueChange={setActiveTab}
+        className="space-y-6"
+      >
         <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="roles" className="flex items-center space-x-2">
             <Shield className="h-4 w-4" />
             <span>Role Verification</span>
           </TabsTrigger>
-          <TabsTrigger value="hospitals" className="flex items-center space-x-2">
+          <TabsTrigger
+            value="hospitals"
+            className="flex items-center space-x-2"
+          >
             <Users className="h-4 w-4" />
             <span>Hospital Management</span>
           </TabsTrigger>
-          <TabsTrigger value="appointments" className="flex items-center space-x-2">
+          <TabsTrigger
+            value="appointments"
+            className="flex items-center space-x-2"
+          >
             <Calendar className="h-4 w-4" />
             <span>Appointments</span>
           </TabsTrigger>
@@ -66,7 +77,10 @@ const AdminDashboard = () => {
             <CreditCard className="h-4 w-4" />
             <span>Payments</span>
           </TabsTrigger>
-          <TabsTrigger value="notifications" className="flex items-center space-x-2">
+          <TabsTrigger
+            value="notifications"
+            className="flex items-center space-x-2"
+          >
             <Bell className="h-4 w-4" />
             <span>Notifications</span>
           </TabsTrigger>
@@ -76,9 +90,6 @@ const AdminDashboard = () => {
           <RoleVerification />
         </TabsContent>
 
-        <TabsContent value="hospitals">
-          <HospitalManagement />
-        </TabsContent>
 
         <TabsContent value="appointments">
           <AppointmentManagement />
@@ -88,9 +99,6 @@ const AdminDashboard = () => {
           <PaymentTracking />
         </TabsContent>
 
-        <TabsContent value="notifications">
-          <NotificationConsole />
-        </TabsContent>
       </Tabs>
     </div>
   );

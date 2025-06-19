@@ -1,4 +1,4 @@
-
+"use client";
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -59,7 +59,7 @@ const RoleVerification = () => {
     }
   ];
 
-  const handleApprove = async (requestId, userId, requestedRole) => {
+  const handleApprove = async (requestId: string, userId: string, requestedRole: string) => {
     // TODO: Update user role in Supabase and blockchain
     // 1. Update user role in database
     // const { error: dbError } = await supabase
@@ -86,7 +86,7 @@ const RoleVerification = () => {
     });
   };
 
-  const handleReject = async (requestId, reason = '') => {
+  const handleReject = async (requestId: string, reason = '') => {
     // TODO: Update role request status in Supabase
     // const { error } = await supabase
     //   .from('role_requests')
@@ -105,25 +105,25 @@ const RoleVerification = () => {
     });
   };
 
-  const getStatusBadge = (status) => {
+  const getStatusBadge = (status: string) => {
     const statusConfig = {
       'pending': { label: 'Pending Review', variant: 'destructive' },
       'approved': { label: 'Approved', variant: 'default' },
       'rejected': { label: 'Rejected', variant: 'secondary' }
     };
     
-    const config = statusConfig[status] || { label: status, variant: 'secondary' };
-    return <Badge variant={config.variant}>{config.label}</Badge>;
+    const config = statusConfig[status as keyof typeof statusConfig] || { label: status, variant: 'secondary' };
+    return <Badge variant={config.variant as any}>{config.label}</Badge>;
   };
 
-  const getRoleBadge = (role) => {
+  const getRoleBadge = (role: string) => {
     const roleConfig = {
       'doctor': { label: 'Doctor', variant: 'default' },
       'hospital': { label: 'Hospital', variant: 'secondary' }
     };
     
-    const config = roleConfig[role] || { label: role, variant: 'outline' };
-    return <Badge variant={config.variant}>{config.label}</Badge>;
+    const config = roleConfig[role as keyof typeof roleConfig] || { label: role, variant: 'outline' };
+    return <Badge variant={config.variant as any}>{config.label}</Badge>;
   };
 
   const filteredRequests = roleRequests.filter(request => {
