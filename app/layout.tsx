@@ -9,9 +9,8 @@ import { Providers } from "@/providers/providers"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "StudySync - AI-Powered Student Productivity",
-  description: "Boost your academic performance with AI-powered study tools",
-    generator: 'v0.dev'
+  title: "TheDavaProject - Trust Without Compromise",
+  description: "TheDavaProject is a platform for creating and sharing digital medical assets",
 }
 
 export default function RootLayout({
