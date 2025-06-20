@@ -1,6 +1,5 @@
-import type { Config } from "tailwindcss"
-import tailwindcssAnimate from "tailwindcss-animate"
-
+import type { Config } from "tailwindcss";
+import tailwindcssAnimate from "tailwindcss-animate";
 
 const config: Config = {
   darkMode: ["class"],
@@ -20,9 +19,9 @@ const config: Config = {
     },
     extend: {
       colors: {
-        'v4-dark': 'hsl(var(--background))',
-        'v4-purple': 'hsl(var(--purple))', 
-        'v4-blue': 'hsl(var(--blue))',
+        "v4-dark": "hsl(var(--background))",
+        "v4-purple": "hsl(var(--purple))",
+        "v4-blue": "hsl(var(--blue))",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -48,6 +47,10 @@ const config: Config = {
           DEFAULT: "hsl(var(--accent))",
           foreground: "hsl(var(--accent-foreground))",
         },
+        accentLight: "#4CAF50",
+        accentDark: "#256029",
+        secondary: "#FAFAFA",
+        background: "#000000",
         popover: {
           DEFAULT: "hsl(var(--popover))",
           foreground: "hsl(var(--popover-foreground))",
@@ -102,6 +105,6 @@ const config: Config = {
     },
   },
   plugins: [tailwindcssAnimate],
-}
+};
 
-export default config
+export default config;
